@@ -1,5 +1,9 @@
 --EMUC-B202/EGPC-B201 Linux Socket CAN Utility
 
+-v3.3
+1. Modify the initialization flow to fine-tune a Jetson Orin module
+2. must use EMUC2_LIBRARY_VERSION >= ver 2.3.9
+
 -v3.2
 1. Add HIGH_LEVEL_PROTOCAL flag
 2. inactive device without check return code

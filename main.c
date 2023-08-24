@@ -97,7 +97,7 @@ typedef struct
 
 extern char *comports [RS232_PORTNR];
 
-extern int EMUCOpenSocketCAN (int com_port);
+extern int EMUCOpenSocketCAN (int com_port, int *fd);
 extern int EMUCCloseDevice   (int com_port);
 extern int EMUCClearFilter   (int com_port, int CAN_port);
 extern int EMUCSetErrorType  (int com_port, int err_type);
@@ -141,7 +141,7 @@ static char *look_up_xmit_delay (int speed);
 /* global variable (for end process) */
 int             port;
 int             ldisc;
-int             fd;
+int             fd = -1;
 int             run_as_daemon = 1;
 speed_t         old_ispeed;
 speed_t         old_ospeed;
@@ -250,7 +250,7 @@ int main (int argc, char *argv[])
     /* Check if timeout is needed */
     if(0 == time_out_int)
     {
-      open_com_rtn = EMUCOpenSocketCAN(port);
+      open_com_rtn = EMUCOpenSocketCAN(port, &fd);
     }
     else
     {
@@ -263,7 +263,7 @@ int main (int argc, char *argv[])
 
       while(1)
       {
-        open_com_rtn = EMUCOpenSocketCAN(port);
+        open_com_rtn = EMUCOpenSocketCAN(port, &fd);
 
         if(clock() > (start + time_out))
         {
@@ -361,7 +361,6 @@ int main (int argc, char *argv[])
         exit(EXIT_FAILURE);
       }
 #endif
-      EMUCCloseDevice(port);
     }
     else
     {
@@ -389,8 +388,6 @@ int main (int argc, char *argv[])
   emucd_running = 1;
 
   /* Now we are a daemon -- do the work for which we were paid */
-  fd = open(ttypath, O_RDWR | O_NONBLOCK | O_NOCTTY);
-
   if (fd < 0)
   {
     if(run_as_daemon) syslog(LOG_NOTICE, "failed to open TTY device %s\n", ttypath);
@@ -594,7 +591,7 @@ static void print_version (char *prg)
     fprintf(stdout, "%s\n", "============================");
 
     /* api version */
-    EMUCOpenSocketCAN(com_port);
+    EMUCOpenSocketCAN(com_port, NULL);
     EMUCInitCAN(com_port, EMUC_INACTIVE, EMUC_INACTIVE);
     EMUCShowVer(com_port, &ver_info);
     fprintf(stdout, "FW ver: %s\n",  ver_info.fw);

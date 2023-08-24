@@ -21,9 +21,11 @@
  *            - must use SocketCAN driver >= ver 3.1
  *  @ ver 3.2 - Add HIGH_LEVEL_PROTOCAL flag
  *            - inactive device without check return code
+ *  @ ver 3.3 - Modify the initialization flow to fine-tune a Jetson Orin module
+ *            - must use EMUC2_LIBRARY_VERSION >= ver 2.3.9
  *
  */
 
-#define  EMUC_DAEMON_UTILITY_VERSION  "v3.2"
+#define  EMUC_DAEMON_UTILITY_VERSION  "v3.3"
 
 #endif
